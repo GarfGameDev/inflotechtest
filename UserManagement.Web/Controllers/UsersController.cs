@@ -11,16 +11,16 @@ public class UsersController : Controller
     private readonly IUserService _userService;
     public UsersController(IUserService userService) => _userService = userService;
 
-    [HttpGet("{id}")]
-    public ViewResult List(int id)
+    [HttpGet("{filter}")]
+    public ViewResult List(string filter)
     {
-        switch (id)
+        switch (filter)
         {
-            case 1:
+            case "showall":
                 return View(FilterUsers(true, false));
-            case 2:
+            case "active":
                 return View(FilterUsers(false, true));
-            case 3:
+            case "notactive":
                 return View(FilterUsers(false, false));
             default:
                 Console.WriteLine("There's been an uninteded issue with filtering users");
@@ -56,5 +56,26 @@ public class UsersController : Controller
                 return model;
             }            
         }
+    }
+
+    [HttpGet("id/Details")]
+    public ViewResult Details(int id)
+    {
+        var items = _userService.GetAll().Select(p => new UserListItemViewModel
+        {
+            Id = p.Id,
+            Forename = p.Forename,
+            Surname = p.Surname,
+            Email = p.Email,
+            IsActive = p.IsActive,
+            DateOfBirth = p.DateOfBirth
+        }).Where(p => p.Id == id);
+
+        var model = new UserListViewModel
+        {
+            Items = items.ToList()
+        };
+
+        return View(model);
     }
 }
