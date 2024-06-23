@@ -1,0 +1,70 @@
+﻿@model IEnumerable<UserManagement.Models.User>
+
+@{
+    ViewData["Title"] = "FilterActive";
+}
+
+<h1>Index</h1>
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Forename)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Surname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsActive)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateOfBirth)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Forename)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <div class="btn-group" role="group">
+        <a asp-action="Index" class="btn btn-default">Show All</a>
+        <a asp-action="FilterActive" asp-route-showactive="true" class="btn btn-default">Active Only</a>
+        <a asp-action="FilterActive" asp-route-showactive="false" class="btn btn-default">Non Active</a>
+    </div>
+
+    <a asp-action="Create" class="btn btn-primary float-end">
+        Add User
+    </a>
+</div>

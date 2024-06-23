@@ -4,13 +4,13 @@ using UserManagement.Models;
 
 namespace UserManagement.Data;
 
-public class DataContext : DbContext, IDataContext
+public class DataContext : DbContext
 {
-    public DataContext() => Database.EnsureCreated();
-
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseInMemoryDatabase("UserManagement.Data.DataContext");
-
+    public DataContext(DbContextOptions<DataContext> options)
+        : base(options)
+    {
+        Database.EnsureCreated();
+    }
     protected override void OnModelCreating(ModelBuilder model)
         => model.Entity<User>().HasData(new[]
         {
@@ -27,26 +27,5 @@ public class DataContext : DbContext, IDataContext
             new User { Id = 11, Forename = "Robin", Surname = "Feld", Email = "rfeld@example.com", IsActive = true, DateOfBirth =  new System.DateOnly(1993, 3, 1) },
         });
 
-    public DbSet<User>? Users { get; set; }
-
-    public IQueryable<TEntity> GetAll<TEntity>() where TEntity : class
-        => base.Set<TEntity>();
-
-    public void Create<TEntity>(TEntity entity) where TEntity : class
-    {
-        base.Add(entity);
-        SaveChanges();
-    }
-
-    public new void Update<TEntity>(TEntity entity) where TEntity : class
-    {
-        base.Update(entity);
-        SaveChanges();
-    }
-
-    public void Delete<TEntity>(TEntity entity) where TEntity : class
-    {
-        base.Remove(entity);
-        SaveChanges();
-    }
+    public DbSet<User> Users { get; set; }
 }
