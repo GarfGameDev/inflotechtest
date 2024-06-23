@@ -22,7 +22,19 @@ namespace UserManagement.Web.Controllers
         // GET: User
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Users.ToListAsync());
+            return View(await _context.Users.ToListAsync());
+        }
+
+        public async Task<IActionResult> FilterActive(bool showActive)
+        {
+            if (showActive)
+            {
+                return View(await _context.Users.Where(p => p.IsActive == true).ToListAsync());
+            }
+            else
+            {
+                return View(await _context.Users.Where(p => p.IsActive == false).ToListAsync());
+            }
         }
 
         // GET: User/Details/5
