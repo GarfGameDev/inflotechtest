@@ -11,7 +11,6 @@ builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseInMemoryDatabase("UserManagement.Data.DataContext"));
 builder.Services
     .AddDataAccess()
-    .AddDomainServices()
     .AddMarkdown()
     .AddControllersWithViews();
 
