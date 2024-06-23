@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using UserManagement.Data;
 using UserManagement.Models;
 
@@ -8,16 +11,20 @@ namespace UserManagement.Web.Controllers
 {
     public class UserController : Controller
     {
+        private readonly Microsoft.Extensions.Logging.ILogger _logger;
         private readonly DataContext _context;
 
-        public UserController(DataContext context)
+        public UserController(DataContext context, ILogger<UserController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: User
         public async Task<IActionResult> Index()
         {
+            _logger.LogInformation("About page visited at {DT}",
+                DateTime.UtcNow.ToLongTimeString());
             return View(await _context.Users.ToListAsync());
         }
 
