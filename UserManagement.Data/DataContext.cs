@@ -8,8 +8,13 @@ public class DataContext : DbContext, IDataContext
 {
     public DataContext() => Database.EnsureCreated();
 
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseInMemoryDatabase("UserManagement.Data.DataContext");
+    public DataContext(DbContextOptions<DataContext> options)
+        : base(options)
+    {
+
+    }
+/*    protected override void OnConfiguring(DbContextOptionsBuilder options)
+        => options.UseInMemoryDatabase("UserManagement.Data.DataContext");*/
 
     protected override void OnModelCreating(ModelBuilder model)
         => model.Entity<User>().HasData(new[]
@@ -27,7 +32,7 @@ public class DataContext : DbContext, IDataContext
             new User { Id = 11, Forename = "Robin", Surname = "Feld", Email = "rfeld@example.com", IsActive = true, DateOfBirth =  new System.DateOnly(1993, 3, 1) },
         });
 
-    public DbSet<User>? Users { get; set; }
+    public DbSet<User> Users { get; set; }
 
     public IQueryable<TEntity> GetAll<TEntity>() where TEntity : class
         => base.Set<TEntity>();
