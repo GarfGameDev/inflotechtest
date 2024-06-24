@@ -2,10 +2,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using UserManagement.Data;
 using Westwind.AspNetCore.Markdown;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
@@ -18,6 +22,8 @@ builder.Services
     .AddControllersWithViews();
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 app.UseMarkdown();
 

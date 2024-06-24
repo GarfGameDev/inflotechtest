@@ -4,14 +4,16 @@ using System.Threading.Tasks;
 using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using UserManagement.Data;
 using UserManagement.Models;
+using UserManagement.Web.Models;
 
 namespace UserManagement.Web.Controllers
 {
     public class UserController : Controller
     {
-        private readonly Microsoft.Extensions.Logging.ILogger _logger;
+        private readonly ILogger<UserController> _logger;
         private readonly DataContext _context;
 
         public UserController(DataContext context, ILogger<UserController> logger)
@@ -23,7 +25,7 @@ namespace UserManagement.Web.Controllers
         // GET: User
         public async Task<IActionResult> Index()
         {
-            _logger.LogInformation("About page visited at {DT}",
+            _logger.LogInformation("About page visited at {}",
                 DateTime.UtcNow.ToLongTimeString());
             return View(await _context.Users.ToListAsync());
         }
@@ -43,8 +45,17 @@ namespace UserManagement.Web.Controllers
         // GET: User/Details/5
         public async Task<IActionResult> Details(long? id)
         {
+/*            string json = System.IO.File.ReadAllText(@"./logs/log-20240623.json");
+            var items = Newtonsoft.Json.JsonConvert.DeserializeObject(json);*/
+            _logger.LogInformation(UserLogging.GetItem, "Getting item {Id}", id);
+            foreach (string line in System.IO.File.ReadLines(@"./logs/log-20240623.json").Where(x => !string.IsNullOrWhiteSpace(x)))
+            {
+                UserLog? userLog = JsonConvert.DeserializeObject<UserLog>(line);
+            }
+
             if (id == null || _context.Users == null)
             {
+                _logger.LogWarning(UserLogging.GetItemNotFound, "Get({Id}) NOT FOUND", id);
                 return NotFound();
             }
 
@@ -52,6 +63,7 @@ namespace UserManagement.Web.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
+                _logger.LogWarning(UserLogging.GetItemNotFound, "Get({Id}) NOT FOUND", id);
                 return NotFound();
             }
 
