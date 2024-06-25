@@ -24,8 +24,6 @@ namespace UserManagement.Web.Controllers
         // GET: User
         public async Task<IActionResult> Index()
         {
-            _logger.LogInformation("About page visited at {}",
-                DateTime.UtcNow.ToLongTimeString());
             return View(await _context.Users.ToListAsync());
         }
 
@@ -189,7 +187,7 @@ namespace UserManagement.Web.Controllers
         private List<UserLog> GetUserLogs(long? id)
         {
             List<UserLog>? userLogs = new List<UserLog>();
-            foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240623.json").Where(x => !string.IsNullOrWhiteSpace(x)))
+            foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
             {
                 var deserializedItem = JsonConvert.DeserializeObject<UserLog>(line);
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
@@ -201,6 +199,22 @@ namespace UserManagement.Web.Controllers
             }
             return userLogs;
             
+        }
+
+        public ViewResult UserLogs()
+        {
+            List<UserLog>? userLogs = new List<UserLog>();
+            foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
+            {
+                var deserializedItem = JsonConvert.DeserializeObject<UserLog>(line);
+#pragma warning disable CS8604 // Possible null reference argument.
+                userLogs.Add(deserializedItem);
+#pragma warning restore CS8604 // Possible null reference argument.
+            }
+
+            return View(userLogs);
+            
+
         }
     }
 }
