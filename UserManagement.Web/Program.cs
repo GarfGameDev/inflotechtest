@@ -10,9 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-
 // Add services to the container.
 builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseInMemoryDatabase("UserManagement.Data.DataContext"));

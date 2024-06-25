@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using UserManagement.Data;
 using UserManagement.Models;
-using UserManagement.Web.Models;
 
 namespace UserManagement.Web.Controllers
 {
@@ -45,13 +44,7 @@ namespace UserManagement.Web.Controllers
         // GET: User/Details/5
         public async Task<IActionResult> Details(long? id)
         {
-/*            string json = System.IO.File.ReadAllText(@"./logs/log-20240623.json");
-            var items = Newtonsoft.Json.JsonConvert.DeserializeObject(json);*/
-            _logger.LogInformation(UserLogging.GetItem, "Getting item {Id}", id);
-            foreach (string line in System.IO.File.ReadLines(@"./logs/log-20240623.json").Where(x => !string.IsNullOrWhiteSpace(x)))
-            {
-                UserLog? userLog = JsonConvert.DeserializeObject<UserLog>(line);
-            }
+
 
             if (id == null || _context.Users == null)
             {
@@ -66,6 +59,22 @@ namespace UserManagement.Web.Controllers
                 _logger.LogWarning(UserLogging.GetItemNotFound, "Get({Id}) NOT FOUND", id);
                 return NotFound();
             }
+
+            _logger.LogInformation(UserLogging.GetItem, "User details have been accessed");
+
+            List<UserLog>? userLogs = new List<UserLog>();
+            foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240623.json").Where(x => !string.IsNullOrWhiteSpace(x)))
+            {
+                var deserializedItem = JsonConvert.DeserializeObject<UserLog>(line);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                if (deserializedItem.Id == id)
+                {
+                    userLogs.Add(deserializedItem);
+                }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            }
+            user.UserLogs = userLogs;
+            
 
             return View(user);
         }

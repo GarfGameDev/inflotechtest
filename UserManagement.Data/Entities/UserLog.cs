@@ -5,7 +5,7 @@ namespace UserManagement.Models;
 public class UserLog
 {
     [JsonProperty("id")]
-    public int Id { get; set; }
+    public int Id { get; set; } = default;
     [JsonProperty("@mt")]
     public string? Description { get; set; }
     [JsonProperty("SourceContext")]
