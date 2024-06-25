@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -201,7 +200,7 @@ namespace UserManagement.Web.Controllers
             
         }
 
-        public ViewResult UserLogs()
+        public ViewResult UserLogs(string searchString)
         {
             List<UserLog>? userLogs = new List<UserLog>();
             foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
@@ -210,6 +209,14 @@ namespace UserManagement.Web.Controllers
 #pragma warning disable CS8604 // Possible null reference argument.
                 userLogs.Add(deserializedItem);
 #pragma warning restore CS8604 // Possible null reference argument.
+
+                
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var filteredUsers = userLogs.Where(s => s.Description?.Contains(searchString) == true);
+                return View(filteredUsers);
             }
 
             return View(userLogs);

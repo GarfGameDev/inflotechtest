@@ -6,6 +6,14 @@
 
 <h1>Index</h1>
 
+@using (Html.BeginForm())
+{
+    <p>
+        Find by name: @Html.TextBox("SearchString")
+        <input type="submit" value="Search" />
+    </p>
+}
+
 <div>
     <table class="table">
         <thead>
