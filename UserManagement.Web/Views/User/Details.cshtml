@@ -47,11 +47,15 @@
     <a asp-action="Index">Back to List</a>
 </div>
 <div>
+    <h5>Logged User Actions</h5>
     <table class="table">
         <thead>
             <tr>
                 <th>
-                      User Logs
+                     Action
+                </th>
+                <th>
+                    Logged at
                 </th>
                 <th></th>
             </tr>
@@ -59,9 +63,13 @@
         <tbody>
             @foreach (var item in Model?.UserLogs!)
             {
+                var formattedDate = item.CreatedAt.ToString("MMMM dd, yyyy");
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => formattedDate)
                     </td>
                 </tr>
             }

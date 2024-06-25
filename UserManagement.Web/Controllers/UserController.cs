@@ -62,18 +62,7 @@ namespace UserManagement.Web.Controllers
 
             _logger.LogInformation(UserLogging.GetItem, "User details have been accessed");
 
-            List<UserLog>? userLogs = new List<UserLog>();
-            foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240623.json").Where(x => !string.IsNullOrWhiteSpace(x)))
-            {
-                var deserializedItem = JsonConvert.DeserializeObject<UserLog>(line);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                if (deserializedItem.Id == id)
-                {
-                    userLogs.Add(deserializedItem);
-                }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-            }
-            user.UserLogs = userLogs;
+            user.UserLogs = GetUserLogs(id);
             
 
             return View(user);
@@ -96,6 +85,7 @@ namespace UserManagement.Web.Controllers
             {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
+                _logger.LogInformation(UserLogging.InsertItem, "User has been created");
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
@@ -135,6 +125,7 @@ namespace UserManagement.Web.Controllers
                 {
                     _context.Update(user);
                     await _context.SaveChangesAsync();
+                    _logger.LogInformation(UserLogging.UpdateItem, "User has been updated");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -183,6 +174,7 @@ namespace UserManagement.Web.Controllers
             if (user != null)
             {
                 _context.Users.Remove(user);
+                _logger.LogInformation(UserLogging.DeleteItem, "User has been deleted");
             }
             
             await _context.SaveChangesAsync();
@@ -192,6 +184,23 @@ namespace UserManagement.Web.Controllers
         private bool UserExists(long id)
         {
           return _context.Users.Any(e => e.Id == id);
+        }
+
+        private List<UserLog> GetUserLogs(long? id)
+        {
+            List<UserLog>? userLogs = new List<UserLog>();
+            foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240623.json").Where(x => !string.IsNullOrWhiteSpace(x)))
+            {
+                var deserializedItem = JsonConvert.DeserializeObject<UserLog>(line);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                if (deserializedItem.Id == id)
+                {
+                    userLogs.Add(deserializedItem);
+                }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            }
+            return userLogs;
+            
         }
     }
 }
