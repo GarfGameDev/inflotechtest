@@ -9,14 +9,24 @@
 @using (Html.BeginForm())
 {
     <p>
-        Find by name: @Html.TextBox("SearchString")
+        Find by name: @Html.TextBox("searchString")
         <input type="submit" value="Search" />
     </p>
-}
+
 
 <div>
+
     <table class="table">
         <thead>
+            <tr>
+                <th>
+                    @Html.ActionLink("Description Sort by", "UserLogs", new { sortOrder = ViewBag.DescriptionSortParm, searchString = ViewBag.SearchString })
+                </th>
+                <th>
+                    @Html.ActionLink("Date Sort by", "UserLogs", new { sortOrder = ViewBag.DateSortParm, searchString = ViewBag.SearchString })
+                </th>
+                <th></th>
+            </tr>
             <tr>
                 <th>
                     Action
@@ -43,3 +53,4 @@
         </tbody>
     </table>
 </div>
+}

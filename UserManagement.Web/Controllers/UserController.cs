@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Drawing.Text;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -200,7 +202,7 @@ namespace UserManagement.Web.Controllers
             
         }
 
-        public ViewResult UserLogs(string searchString)
+        public ViewResult UserLogs(string searchString, string sortOrder)
         {
             List<UserLog>? userLogs = new List<UserLog>();
             foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
@@ -213,15 +215,78 @@ namespace UserManagement.Web.Controllers
                 
             }
 
+            ViewBag.DescriptionSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
+            ViewBag.DateSortParm = sortOrder == "date_asc" ? "date_desc" : "date_asc";
+            ViewBag.SearchString = searchString;
+
+            IEnumerable<UserLog> filteredLogs = new List<UserLog>();
             if (!String.IsNullOrEmpty(searchString))
             {
-                var filteredUsers = userLogs.Where(s => s.Description?.Contains(searchString) == true);
-                return View(filteredUsers);
+                filteredLogs = userLogs.Where(s => s.Description?.Contains(searchString) == true);
+
+                if (!String.IsNullOrEmpty(sortOrder))
+                {
+                    return View(SortLogs(sortOrder, filteredLogs));
+                }
+                return View(filteredLogs);
             }
+
+            if (!String.IsNullOrEmpty(sortOrder))
+            {
+                return View(SortLogs(sortOrder, userLogs));
+            }
+            
+
+            
+/*            ViewBag.DescriptionSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
+            ViewBag.DateSortParm = sortOrder == "date_asc" ? "date_desc" : "date_asc";
+
+            switch (sortOrder)
+            {
+                case "description_desc":
+                   var sortedUsers = filteredLogs.OrderByDescending(s => s.Description);
+                    return View(sortedUsers);
+                case "description_asc":
+                    sortedUsers = filteredLogs.OrderBy(s => s.Description );
+                    return View(sortedUsers);
+                case "date_desc":
+                    sortedUsers = filteredLogs.OrderByDescending(s => s.CreatedAt);
+                    return View(sortedUsers);
+                case "date_asc":
+                    sortedUsers = filteredLogs.OrderBy(s => s.CreatedAt);
+                    return View(sortedUsers);
+                default:
+                    break;
+            }*/
+
+
 
             return View(userLogs);
             
 
+        }
+
+        private IEnumerable<UserLog> SortLogs(string sortOrder, IEnumerable<UserLog> userLogs)
+        {
+
+
+            switch (sortOrder)
+            {
+                case "description_desc":
+                    var sortedLogs = userLogs.OrderByDescending(s => s.Description);
+                    return sortedLogs;
+                case "description_asc":
+                    sortedLogs = userLogs.OrderBy(s => s.Description);
+                    return sortedLogs;
+                case "date_desc":
+                    sortedLogs = userLogs.OrderByDescending(s => s.CreatedAt);
+                    return sortedLogs;
+                case "date_asc":
+                    sortedLogs = userLogs.OrderBy(s => s.CreatedAt);
+                    return sortedLogs;
+                default:
+                    return userLogs;
+            }
         }
     }
 }
