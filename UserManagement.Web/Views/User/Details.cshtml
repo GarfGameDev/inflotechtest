@@ -63,7 +63,12 @@
         <tbody>
             @foreach (var item in Model?.UserLogs!)
             {
-                var formattedDate = item.CreatedAt.ToString("MMMM dd, yyyy, H:mm:ss");
+                DateTime date;
+                string? formattedDate = null;
+                if (DateTime.TryParse(item.CreatedAt, out date))
+                {
+                    formattedDate = date.ToString("MMMM dd, yyyy, H:mm:ss");
+                }
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Description)

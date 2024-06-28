@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace UserManagement.Models;
 
@@ -10,9 +9,15 @@ public class UserLog
     [JsonProperty("@mt")]
     public string? Description { get; set; }
     [JsonProperty("@t")]
-    public DateTime CreatedAt { get; set; }
+    public string? CreatedAt { get; set; }
     [JsonProperty("SourceContext")]
     public string? SourceContext { get; set; }
     [JsonProperty("RequestPath")]
     public string? RequestPath { get; set; }
+    [JsonProperty("RequestMethod")]
+    public string? RequestMethod { get; set; }
+    [JsonProperty("RequestId")]
+    public string? RequestId { get; set; } 
+    [JsonProperty("StatusCode")]
+    public int StatusCode { get; set; }
 }

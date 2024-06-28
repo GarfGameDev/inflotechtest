@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Drawing.Text;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -192,6 +190,7 @@ namespace UserManagement.Web.Controllers
             {
                 var deserializedItem = JsonConvert.DeserializeObject<UserLog>(line);
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
+
                 if (deserializedItem.Id == id)
                 {
                     userLogs.Add(deserializedItem);
@@ -210,9 +209,7 @@ namespace UserManagement.Web.Controllers
                 var deserializedItem = JsonConvert.DeserializeObject<UserLog>(line);
 #pragma warning disable CS8604 // Possible null reference argument.
                 userLogs.Add(deserializedItem);
-#pragma warning restore CS8604 // Possible null reference argument.
-
-                
+#pragma warning restore CS8604 // Possible null reference argument.           
             }
 
             ViewBag.DescriptionSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
@@ -235,41 +232,33 @@ namespace UserManagement.Web.Controllers
             {
                 return View(SortLogs(sortOrder, userLogs));
             }
-            
-
-            
-/*            ViewBag.DescriptionSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
-            ViewBag.DateSortParm = sortOrder == "date_asc" ? "date_desc" : "date_asc";
-
-            switch (sortOrder)
-            {
-                case "description_desc":
-                   var sortedUsers = filteredLogs.OrderByDescending(s => s.Description);
-                    return View(sortedUsers);
-                case "description_asc":
-                    sortedUsers = filteredLogs.OrderBy(s => s.Description );
-                    return View(sortedUsers);
-                case "date_desc":
-                    sortedUsers = filteredLogs.OrderByDescending(s => s.CreatedAt);
-                    return View(sortedUsers);
-                case "date_asc":
-                    sortedUsers = filteredLogs.OrderBy(s => s.CreatedAt);
-                    return View(sortedUsers);
-                default:
-                    break;
-            }*/
-
-
 
             return View(userLogs);
             
-
         }
 
+        public ViewResult LogDetails(string createdAt)
+        {
+            UserLog? userLog = new UserLog();
+            foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
+            {
+                var deserializedItem = JsonConvert.DeserializeObject<UserLog>(line);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                if (deserializedItem.CreatedAt == createdAt)
+                {
+                    userLog = deserializedItem;
+                }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            }
+            DateTime date;
+            if (DateTime.TryParse(userLog.CreatedAt, out date))
+            {
+                userLog.CreatedAt = date.ToString("MMMM dd, yyyy, H:mm:ss");
+            }
+            return View(userLog);
+        }
         private IEnumerable<UserLog> SortLogs(string sortOrder, IEnumerable<UserLog> userLogs)
         {
-
-
             switch (sortOrder)
             {
                 case "description_desc":
