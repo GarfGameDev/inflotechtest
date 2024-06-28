@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -10,7 +9,7 @@ using UserManagement.Models;
 namespace UserManagement.Web.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;
@@ -23,6 +22,7 @@ namespace UserManagement.Web.Controllers
         }
 
         // GET: User
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<User>>> Index()
         {
             return await _context.Users.ToListAsync();
@@ -157,7 +157,7 @@ namespace UserManagement.Web.Controllers
             return userLogs;         
         }
 
-        public ViewResult UserLogs(string searchString, string sortOrder)
+ /*       public ViewResult UserLogs(string searchString, string sortOrder)
         {
             List<UserLog>? userLogs = new List<UserLog>();
             foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
@@ -211,7 +211,7 @@ namespace UserManagement.Web.Controllers
                 userLog.CreatedAt = date.ToString("MMMM dd, yyyy, H:mm:ss");
             }
             return View(userLog);
-        }
+        }*/
         private IEnumerable<UserLog> SortLogs(string sortOrder, IEnumerable<UserLog> userLogs)
         {
             switch (sortOrder)

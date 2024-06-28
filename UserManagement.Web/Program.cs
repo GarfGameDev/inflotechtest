@@ -11,13 +11,15 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 // Add services to the container.
+builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseInMemoryDatabase("UserManagement.Data.DataContext"));
 builder.Services
     .AddDataAccess()
     .AddMarkdown()
     .AddControllersWithViews();
-
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
@@ -28,9 +30,17 @@ app.UseHsts();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials());
+
 app.UseRouting();
 app.UseAuthorization();
 
-app.MapDefaultControllerRoute();
+app.MapControllers();
+
+app.MapFallbackToFile("/index.html");
 
 app.Run();
