@@ -46,3 +46,41 @@
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+<div>
+    <h5>Logged User Actions</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                     Action
+                </th>
+                <th>
+                    Logged at
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model?.UserLogs!)
+            {
+                DateTime date;
+                string? formattedDate = null;
+                if (DateTime.TryParse(item.CreatedAt, out date))
+                {
+                    formattedDate = date.ToString("MMMM dd, yyyy, H:mm:ss");
+                }
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => formattedDate)
+                    </td>
+                    <td>
+                        <a asp-action="LogDetails" asp-route-createdat="@item.CreatedAt">Log Details</a> |
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
