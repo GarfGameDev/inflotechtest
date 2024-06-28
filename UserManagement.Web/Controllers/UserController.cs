@@ -9,6 +9,8 @@ using UserManagement.Models;
 
 namespace UserManagement.Web.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;
@@ -21,25 +23,27 @@ namespace UserManagement.Web.Controllers
         }
 
         // GET: User
-        public async Task<IActionResult> Index()
+        public async Task<ActionResult<IEnumerable<User>>> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            return await _context.Users.ToListAsync();
         }
 
-        public async Task<IActionResult> FilterActive(bool showActive)
+        [HttpGet("showactive")]
+        public async Task<ActionResult<IEnumerable<User>>> FilterActive(bool showActive)
         {
             if (showActive)
             {
-                return View(await _context.Users.Where(p => p.IsActive == true).ToListAsync());
+                return await _context.Users.Where(p => p.IsActive == true).ToListAsync();
             }
             else
             {
-                return View(await _context.Users.Where(p => p.IsActive == false).ToListAsync());
+                return await _context.Users.Where(p => p.IsActive == false).ToListAsync();
             }
         }
 
         // GET: User/Details/5
-        public async Task<IActionResult> Details(long? id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> Details(long? id)
         {
 
 
@@ -62,13 +66,7 @@ namespace UserManagement.Web.Controllers
             user.UserLogs = GetUserLogs(id);
             
 
-            return View(user);
-        }
-
-        // GET: User/Create
-        public IActionResult Create()
-        {
-            return View();
+            return user;
         }
 
         // POST: User/Create
@@ -76,86 +74,45 @@ namespace UserManagement.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Forename,Surname,Email,IsActive,DateOfBirth")] User user)
+        public async Task<ActionResult<User>> Create([Bind("Id,Forename,Surname,Email,IsActive,DateOfBirth")] User user)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                _logger.LogInformation(UserLogging.InsertItem, "User has been created");
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation(UserLogging.InsertItem, "User has been created");
+            return CreatedAtAction(nameof(Create), new { id = user.Id }, user);
         }
 
-        // GET: User/Edit/5
-        public async Task<IActionResult> Edit(long? id)
-        {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
-        }
-
-        // POST: User/Edit/5
+        // PUT: User/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPut("id")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Forename,Surname,Email,IsActive,DateOfBirth")] User user)
         {
             if (id != user.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(user).State = EntityState.Modified;
+
+            try
             {
-                try
+                await _context.SaveChangesAsync();
+                _logger.LogInformation(UserLogging.UpdateItem, "User has been updated");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(id))
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                    _logger.LogInformation(UserLogging.UpdateItem, "User has been updated");
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(user);
-        }
-
-        // GET: User/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
+            return NoContent();
         }
 
         // POST: User/Delete/5
@@ -175,7 +132,7 @@ namespace UserManagement.Web.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return NoContent();
         }
 
         private bool UserExists(long id)
