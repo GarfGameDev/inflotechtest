@@ -76,6 +76,9 @@
                     <td>
                         @Html.DisplayFor(modelItem => formattedDate)
                     </td>
+                    <td>
+                        <a asp-action="LogDetails" asp-route-createdat="@item.CreatedAt">Log Details</a> |
+                    </td>
                 </tr>
             }
         </tbody>

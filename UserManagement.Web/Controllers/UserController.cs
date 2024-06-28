@@ -197,8 +197,7 @@ namespace UserManagement.Web.Controllers
                 }
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
-            return userLogs;
-            
+            return userLogs;         
         }
 
         public ViewResult UserLogs(string searchString, string sortOrder)
@@ -233,8 +232,7 @@ namespace UserManagement.Web.Controllers
                 return View(SortLogs(sortOrder, userLogs));
             }
 
-            return View(userLogs);
-            
+            return View(userLogs);       
         }
 
         public ViewResult LogDetails(string createdAt)
