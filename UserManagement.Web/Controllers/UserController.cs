@@ -72,9 +72,8 @@ namespace UserManagement.Web.Controllers
         // POST: User/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult<User>> Create([Bind("Id,Forename,Surname,Email,IsActive,DateOfBirth")] User user)
+        [HttpPost("create")]
+        public async Task<ActionResult<User>> Create(User user)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
