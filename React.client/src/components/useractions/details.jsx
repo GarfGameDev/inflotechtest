@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 function Users() {
     const [users, setUsers] = useState();
@@ -26,7 +26,9 @@ function Users() {
                         <td>{users.surname}</td>
                         <td>{users.email}</td>
                         <td>{users.isActive.toString()}</td>
-                        <td>{users.dateOfBirth.toLocaleString()}</td>
+                    <td>{users.dateOfBirth.toLocaleString()}</td>
+                    <td><Link to={'/users/edit/' + id}>Edit |</Link></td>
+                    <td><Link to={'/users/delete/' + id}>Delete |</Link></td>
                     </tr>
             </tbody>
         </table>;

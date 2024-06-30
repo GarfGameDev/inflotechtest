@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom';
+
 
 function Users() {
+    const navigate = useNavigate();
     const [users, setUsers] = useState();
-
+    const { id } = useParams();
     useEffect(() => {
         populateUserData();
-    }, []);
+    },);
+
+    const deleteUser = () => {
+        fetch(`https://localhost:7084/api/user/${id}`, {
+            method: 'delete',
+        });
+        navigate('/');
+    }
 
     const contents = users === undefined
         ? <p><em>Loading... Please refresh once the ASP.NET backend has started.</em></p>
@@ -21,18 +30,13 @@ function Users() {
                 </tr>
             </thead>
             <tbody>
-                {users.map(user =>
-                    <tr key={user.dateofbirth}>
-                        <td>{user.forename}</td>
-                        <td>{user.surname}</td>
-                        <td>{user.email}</td>
-                        <td>{user.isActive.toString()}</td>
-                        <td>{user.dateOfBirth.toLocaleString()}</td>
-                        <td><Link to={'/users/details/' + user.id}>Details |</Link></td>
-                        <td><Link to={'/users/edit/' + user.id}>Edit |</Link></td>
-                        <td><Link to={'/users/delete/' + user.id}>Delete |</Link></td>
+                    <tr key={users.dateofbirth}>
+                        <td>{users.forename}</td>
+                        <td>{users.surname}</td>
+                        <td>{users.email}</td>
+                        <td>{users.isActive.toString()}</td>
+                        <td>{users.dateOfBirth.toLocaleString()}</td>
                     </tr>
-                )}
             </tbody>
         </table>;
 
@@ -41,15 +45,16 @@ function Users() {
             <h1 id="tabelLabel">React</h1>
             <p>I am a working React frontend</p>
             {contents}
+            <p>Are you sure you want to delete this user?</p>
+                <button onClick={deleteUser}>Yes</button>
         </div>
     );
 
     async function populateUserData() {
-        const response = await fetch('https://localhost:7084/api/user/all');
+        const response = await fetch(`https://localhost:7084/api/user/${id}`);
         const data = await response.json();
         setUsers(data);
     }
-
 }
 
 export default Users;

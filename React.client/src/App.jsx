@@ -6,6 +6,7 @@ import Users from "./components/users";
 import UserCreate from './components/useractions/create';
 import UserDetails from './components/useractions/details';
 import UserEdit from './components/useractions/edit';
+import UserDelete from './components/useractions/delete';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/users/create" element={<UserCreate />} />
                     <Route path="/users/details/:id" element={<UserDetails />} />
                     <Route path="/users/edit/:id" element={<UserEdit />} />
+                    <Route path="/users/delete/:id" element={<UserDelete/>} />
                 </Routes>
             </main>
         </Router>

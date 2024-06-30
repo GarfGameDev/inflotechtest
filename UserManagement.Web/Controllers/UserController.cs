@@ -113,9 +113,8 @@ namespace UserManagement.Web.Controllers
             return NoContent();
         }
 
-        // POST: User/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        // DELETE: User/Delete/5
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             if (_context.Users == null)
