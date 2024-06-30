@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'
 
 function Users() {
     const [users, setUsers] = useState();
@@ -27,6 +28,7 @@ function Users() {
                         <td>{user.email}</td>
                         <td>{user.isActive.toString()}</td>
                         <td>{user.dateOfBirth.toLocaleString()}</td>
+                        <td><Link to={'/users/details/' + user.id}>Details</Link></td>
                     </tr>
                 )}
             </tbody>

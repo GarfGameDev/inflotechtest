@@ -4,6 +4,7 @@ import Navbar from "./components/navbar";
 import Home from "./components/home";
 import Users from "./components/users";
 import UserCreate from './components/useractions/create';
+import UserDetails from './components/useractions/details';
 
 function App() {
 
@@ -14,7 +15,8 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/users" element={<Users />} />
-                    <Route path="/users/create" element={<UserCreate /> } />
+                    <Route path="/users/create" element={<UserCreate />} />
+                    <Route path="/users/details/:id" element={<UserDetails />} />
                 </Routes>
             </main>
         </Router>
