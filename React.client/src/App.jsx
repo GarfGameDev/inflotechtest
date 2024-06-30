@@ -8,6 +8,8 @@ import UserDetails from './components/useractions/details';
 import UserEdit from './components/useractions/edit';
 import UserDelete from './components/useractions/delete';
 
+import Logs from './components/logs';
+
 function App() {
 
     return (
@@ -20,7 +22,8 @@ function App() {
                     <Route path="/users/create" element={<UserCreate />} />
                     <Route path="/users/details/:id" element={<UserDetails />} />
                     <Route path="/users/edit/:id" element={<UserEdit />} />
-                    <Route path="/users/delete/:id" element={<UserDelete/>} />
+                    <Route path="/users/delete/:id" element={<UserDelete />} />
+                    <Route path="/logs" element={<Logs />} />
                 </Routes>
             </main>
         </Router>

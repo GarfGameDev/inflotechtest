@@ -20,6 +20,7 @@ const Navbars = () => {
                                     Create User
                                 </NavDropdown.Item>
                             </NavDropdown>
+                            <Nav.Link href="/logs">Logs</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>

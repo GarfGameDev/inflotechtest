@@ -42,8 +42,8 @@ function Users() {
 
     return (
         <div>
-            <h1 id="tabelLabel">React</h1>
-            <p>I am a working React frontend</p>
+            <h1 id="tabelLabel">Delete</h1>
+            <p>Details on a user staged for deletion</p>
             {contents}
             <p>Are you sure you want to delete this user?</p>
                 <button onClick={deleteUser}>Yes</button>

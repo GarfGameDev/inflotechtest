@@ -38,8 +38,8 @@ function Users() {
 
     return (
         <div>
-            <h1 id="tabelLabel">React</h1>
-            <p>I am a working React frontend</p>
+            <h1 id="tabelLabel">Users</h1>
+            <p>A list of users from the backend</p>
             {contents}
         </div>
     );

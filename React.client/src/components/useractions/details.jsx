@@ -35,8 +35,8 @@ function Users() {
 
     return (
         <div>
-            <h1 id="tabelLabel">React</h1>
-            <p>I am a working React frontend</p>
+            <h1 id="tabelLabel">User</h1>
+            <p>More details on a specific user</p>
             {contents}
         </div>
     );

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -154,7 +155,8 @@ namespace UserManagement.Web.Controllers
             return userLogs;         
         }
 
- /*       public ViewResult UserLogs(string searchString, string sortOrder)
+        [HttpGet("logs")]
+        public List<UserLog> UserLogs()
         {
             List<UserLog>? userLogs = new List<UserLog>();
             foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
@@ -165,7 +167,7 @@ namespace UserManagement.Web.Controllers
 #pragma warning restore CS8604 // Possible null reference argument.           
             }
 
-            ViewBag.DescriptionSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
+/*            ViewBag.DescriptionSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
             ViewBag.DateSortParm = sortOrder == "date_asc" ? "date_desc" : "date_asc";
             ViewBag.SearchString = searchString;
 
@@ -183,10 +185,10 @@ namespace UserManagement.Web.Controllers
 
             if (!String.IsNullOrEmpty(sortOrder))
             {
-                return View(SortLogs(sortOrder, userLogs));
-            }
+                return SortLogs(sortOrder, userLogs);
+            }*/
 
-            return View(userLogs);       
+            return userLogs;
         }
 
         public ViewResult LogDetails(string createdAt)
@@ -208,7 +210,7 @@ namespace UserManagement.Web.Controllers
                 userLog.CreatedAt = date.ToString("MMMM dd, yyyy, H:mm:ss");
             }
             return View(userLog);
-        }*/
+        }
         private IEnumerable<UserLog> SortLogs(string sortOrder, IEnumerable<UserLog> userLogs)
         {
             switch (sortOrder)
