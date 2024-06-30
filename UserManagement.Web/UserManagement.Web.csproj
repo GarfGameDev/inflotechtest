@@ -12,6 +12,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UserManagement.Services\UserManagement.Services.csproj" />
+    <ProjectReference Include="..\React.client\reactnetskeleton.client.esproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>

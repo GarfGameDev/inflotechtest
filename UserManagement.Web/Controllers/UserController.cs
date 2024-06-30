@@ -9,6 +9,8 @@ using UserManagement.Models;
 
 namespace UserManagement.Web.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;
@@ -20,26 +22,29 @@ namespace UserManagement.Web.Controllers
             _logger = logger;
         }
 
-        // GET: User
-        public async Task<IActionResult> Index()
+        // GET: User/all
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<User>>> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            return await _context.Users.ToListAsync();
         }
 
-        public async Task<IActionResult> FilterActive(bool showActive)
+        [HttpGet("showactive")]
+        public async Task<ActionResult<IEnumerable<User>>> FilterActive(bool showActive)
         {
             if (showActive)
             {
-                return View(await _context.Users.Where(p => p.IsActive == true).ToListAsync());
+                return await _context.Users.Where(p => p.IsActive == true).ToListAsync();
             }
             else
             {
-                return View(await _context.Users.Where(p => p.IsActive == false).ToListAsync());
+                return await _context.Users.Where(p => p.IsActive == false).ToListAsync();
             }
         }
 
-        // GET: User/Details/5
-        public async Task<IActionResult> Details(long? id)
+        // GET: User/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> Details(long? id)
         {
 
 
@@ -62,105 +67,55 @@ namespace UserManagement.Web.Controllers
             user.UserLogs = GetUserLogs(id);
             
 
-            return View(user);
-        }
-
-        // GET: User/Create
-        public IActionResult Create()
-        {
-            return View();
+            return user;
         }
 
         // POST: User/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Forename,Surname,Email,IsActive,DateOfBirth")] User user)
+        [HttpPost("create")]
+        public async Task<ActionResult<User>> Create(User user)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                _logger.LogInformation(UserLogging.InsertItem, "User has been created");
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation(UserLogging.InsertItem, "User has been created");
+            return CreatedAtAction(nameof(Create), new { id = user.Id }, user);
         }
 
-        // GET: User/Edit/5
-        public async Task<IActionResult> Edit(long? id)
-        {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
-        }
-
-        // POST: User/Edit/5
+        // PUT: User/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Forename,Surname,Email,IsActive,DateOfBirth")] User user)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Edit(long id, User user)
         {
             if (id != user.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(user).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                    _logger.LogInformation(UserLogging.UpdateItem, "User has been updated");
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+                _logger.LogInformation(UserLogging.UpdateItem, "User has been updated");
             }
-            return View(user);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return NoContent();
         }
 
-        // GET: User/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // POST: User/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        // DELETE: User/5
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             if (_context.Users == null)
@@ -175,7 +130,7 @@ namespace UserManagement.Web.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return NoContent();
         }
 
         private bool UserExists(long id)
@@ -183,7 +138,9 @@ namespace UserManagement.Web.Controllers
           return _context.Users.Any(e => e.Id == id);
         }
 
-        private List<UserLog> GetUserLogs(long? id)
+        // GET user/userlog/id
+        [HttpGet("userlog/{id}")]
+        public List<UserLog> GetUserLogs(long? id)
         {
             List<UserLog>? userLogs = new List<UserLog>();
             foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
@@ -200,7 +157,8 @@ namespace UserManagement.Web.Controllers
             return userLogs;         
         }
 
-        public ViewResult UserLogs(string searchString, string sortOrder)
+        [HttpGet("logs")]
+        public List<UserLog> UserLogs()
         {
             List<UserLog>? userLogs = new List<UserLog>();
             foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
@@ -211,31 +169,11 @@ namespace UserManagement.Web.Controllers
 #pragma warning restore CS8604 // Possible null reference argument.           
             }
 
-            ViewBag.DescriptionSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
-            ViewBag.DateSortParm = sortOrder == "date_asc" ? "date_desc" : "date_asc";
-            ViewBag.SearchString = searchString;
-
-            IEnumerable<UserLog> filteredLogs = new List<UserLog>();
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                filteredLogs = userLogs.Where(s => s.Description?.Contains(searchString) == true);
-
-                if (!String.IsNullOrEmpty(sortOrder))
-                {
-                    return View(SortLogs(sortOrder, filteredLogs));
-                }
-                return View(filteredLogs);
-            }
-
-            if (!String.IsNullOrEmpty(sortOrder))
-            {
-                return View(SortLogs(sortOrder, userLogs));
-            }
-
-            return View(userLogs);       
+            return userLogs;
         }
-
-        public ViewResult LogDetails(string createdAt)
+        // GET user/logs/id
+        [HttpGet("logs/{createdAt}")]
+        public UserLog LogDetails(string createdAt)
         {
             UserLog? userLog = new UserLog();
             foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
@@ -253,9 +191,9 @@ namespace UserManagement.Web.Controllers
             {
                 userLog.CreatedAt = date.ToString("MMMM dd, yyyy, H:mm:ss");
             }
-            return View(userLog);
+            return userLog;
         }
-        private IEnumerable<UserLog> SortLogs(string sortOrder, IEnumerable<UserLog> userLogs)
+/*        private IEnumerable<UserLog> SortLogs(string sortOrder, IEnumerable<UserLog> userLogs)
         {
             switch (sortOrder)
             {
@@ -274,6 +212,6 @@ namespace UserManagement.Web.Controllers
                 default:
                     return userLogs;
             }
-        }
+        }*/
     }
 }
