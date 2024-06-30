@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
+import { Link } from 'react-router-dom';
 
-function Users() {
-    const [users, setUsers] = useState([]);
+function Logs() {
+    const [logs, setLogs] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -10,12 +11,12 @@ function Users() {
     const itemsPerPage = 10
 
     useEffect(() => {
-        populateUserData();
+        populateLogsData();
     }, []);
 
     const startIndex = currentPage * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const subset = users.slice(startIndex, endIndex);
+    const subset = logs.slice(startIndex, endIndex);
 
     const handlePageChange = (selectedPage) => {
         setCurrentPage(selectedPage.selected);
@@ -31,10 +32,11 @@ function Users() {
                 </tr>
             </thead>
             <tbody>
-                {subset.map(user =>
-                    <tr key={user.createdAt}>
-                        <td>{user.description}</td>
-                        <td>{user.createdAt}</td>
+                {subset.map(log =>
+                    <tr key={log.createdAt}>
+                        <td>{log.description}</td>
+                        <td>{log.createdAt}</td>
+                        <td><Link to={'/logs/' + log.createdAt}>Details |</Link></td>
                     </tr>
                 )}
 
@@ -64,14 +66,14 @@ function Users() {
         </div>
     );
 
-    async function populateUserData() {
+    async function populateLogsData() {
         const response = await fetch('https://localhost:7084/api/user/logs');
         const data = await response.json();
-        setUsers(data);
+        setLogs(data);
         setTotalPages(Math.ceil(data.length / itemsPerPage));
     }
 
 }
 
 
-export default Users;
+export default Logs;

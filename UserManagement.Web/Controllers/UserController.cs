@@ -22,7 +22,7 @@ namespace UserManagement.Web.Controllers
             _logger = logger;
         }
 
-        // GET: User
+        // GET: User/all
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<User>>> Index()
         {
@@ -42,7 +42,7 @@ namespace UserManagement.Web.Controllers
             }
         }
 
-        // GET: User/Details/5
+        // GET: User/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> Details(long? id)
         {
@@ -82,7 +82,7 @@ namespace UserManagement.Web.Controllers
             return CreatedAtAction(nameof(Create), new { id = user.Id }, user);
         }
 
-        // PUT: User/Edit/5
+        // PUT: User/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPut("{id}")]
@@ -114,7 +114,7 @@ namespace UserManagement.Web.Controllers
             return NoContent();
         }
 
-        // DELETE: User/Delete/5
+        // DELETE: User/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
@@ -167,31 +167,11 @@ namespace UserManagement.Web.Controllers
 #pragma warning restore CS8604 // Possible null reference argument.           
             }
 
-/*            ViewBag.DescriptionSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
-            ViewBag.DateSortParm = sortOrder == "date_asc" ? "date_desc" : "date_asc";
-            ViewBag.SearchString = searchString;
-
-            IEnumerable<UserLog> filteredLogs = new List<UserLog>();
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                filteredLogs = userLogs.Where(s => s.Description?.Contains(searchString) == true);
-
-                if (!String.IsNullOrEmpty(sortOrder))
-                {
-                    return View(SortLogs(sortOrder, filteredLogs));
-                }
-                return View(filteredLogs);
-            }
-
-            if (!String.IsNullOrEmpty(sortOrder))
-            {
-                return SortLogs(sortOrder, userLogs);
-            }*/
-
             return userLogs;
         }
-
-        public ViewResult LogDetails(string createdAt)
+        // GET user/logs/id
+        [HttpGet("logs/{createdAt}")]
+        public UserLog LogDetails(string createdAt)
         {
             UserLog? userLog = new UserLog();
             foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
@@ -209,7 +189,7 @@ namespace UserManagement.Web.Controllers
             {
                 userLog.CreatedAt = date.ToString("MMMM dd, yyyy, H:mm:ss");
             }
-            return View(userLog);
+            return userLog;
         }
         private IEnumerable<UserLog> SortLogs(string sortOrder, IEnumerable<UserLog> userLogs)
         {

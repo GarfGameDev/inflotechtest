@@ -9,6 +9,7 @@ import UserEdit from './components/useractions/edit';
 import UserDelete from './components/useractions/delete';
 
 import Logs from './components/logs';
+import LogDetails from './components/logdetails';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/users/edit/:id" element={<UserEdit />} />
                     <Route path="/users/delete/:id" element={<UserDelete />} />
                     <Route path="/logs" element={<Logs />} />
+                    <Route path="/logs/:id" element={<LogDetails />} />
                 </Routes>
             </main>
         </Router>
