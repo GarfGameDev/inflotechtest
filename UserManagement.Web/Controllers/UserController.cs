@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using UserManagement.Data;
 using UserManagement.Models;
+using UserManagement.Services;
 
 namespace UserManagement.Web.Controllers
 {
@@ -15,11 +16,13 @@ namespace UserManagement.Web.Controllers
     {
         private readonly ILogger<UserController> _logger;
         private readonly DataContext _context;
+        private readonly IUserService _service;
 
-        public UserController(DataContext context, ILogger<UserController> logger)
+        public UserController(DataContext context, ILogger<UserController> logger, IUserService service)
         {
             _context = context;
             _logger = logger;
+            _service = service;
         }
 
         // GET: User/all
@@ -74,10 +77,9 @@ namespace UserManagement.Web.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost("create")]
-        public async Task<ActionResult<User>> Create(User user)
+        public ActionResult<User> Create(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            _service.CreateUser(user);
             _logger.LogInformation(UserLogging.InsertItem, "User has been created");
             return CreatedAtAction(nameof(Create), new { id = user.Id }, user);
         }

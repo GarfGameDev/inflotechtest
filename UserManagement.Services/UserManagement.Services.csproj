@@ -5,9 +5,4 @@
   <ItemGroup>
     <ProjectReference Include="..\UserManagement.Data\UserManagement.Data.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-    <Folder Include="Implementations\" />
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
 </Project>
