@@ -138,7 +138,9 @@ namespace UserManagement.Web.Controllers
           return _context.Users.Any(e => e.Id == id);
         }
 
-        private List<UserLog> GetUserLogs(long? id)
+        // GET user/userlog/id
+        [HttpGet("userlog/{id}")]
+        public List<UserLog> GetUserLogs(long? id)
         {
             List<UserLog>? userLogs = new List<UserLog>();
             foreach (string? line in System.IO.File.ReadLines(@"./logs/log-20240625.json").Where(x => !string.IsNullOrWhiteSpace(x)))
@@ -191,7 +193,7 @@ namespace UserManagement.Web.Controllers
             }
             return userLog;
         }
-        private IEnumerable<UserLog> SortLogs(string sortOrder, IEnumerable<UserLog> userLogs)
+/*        private IEnumerable<UserLog> SortLogs(string sortOrder, IEnumerable<UserLog> userLogs)
         {
             switch (sortOrder)
             {
@@ -210,6 +212,6 @@ namespace UserManagement.Web.Controllers
                 default:
                     return userLogs;
             }
-        }
+        }*/
     }
 }
