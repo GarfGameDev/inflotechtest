@@ -5,6 +5,7 @@ import Home from "./components/home";
 import Users from "./components/users";
 import UserCreate from './components/useractions/create';
 import UserDetails from './components/useractions/details';
+import UserEdit from './components/useractions/edit';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
                     <Route path="/users" element={<Users />} />
                     <Route path="/users/create" element={<UserCreate />} />
                     <Route path="/users/details/:id" element={<UserDetails />} />
+                    <Route path="/users/edit/:id" element={<UserEdit />} />
                 </Routes>
             </main>
         </Router>

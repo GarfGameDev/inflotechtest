@@ -84,9 +84,8 @@ namespace UserManagement.Web.Controllers
         // PUT: User/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPut("id")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Forename,Surname,Email,IsActive,DateOfBirth")] User user)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Edit(long id, User user)
         {
             if (id != user.Id)
             {

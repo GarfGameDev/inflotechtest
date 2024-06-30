@@ -28,7 +28,8 @@ function Users() {
                         <td>{user.email}</td>
                         <td>{user.isActive.toString()}</td>
                         <td>{user.dateOfBirth.toLocaleString()}</td>
-                        <td><Link to={'/users/details/' + user.id}>Details</Link></td>
+                        <td><Link to={'/users/details/' + user.id}>Details | </Link></td>
+                        <td><Link to={'/users/edit/' + user.id}>Edit | </Link></td>
                     </tr>
                 )}
             </tbody>
